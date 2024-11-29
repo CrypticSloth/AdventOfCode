@@ -19,7 +19,7 @@ class Solver():
         return individual_chars
 
     def identify_location_of_digits(self, line:str) -> list[tuple[int,int]]:
-        r = r".(\d+)"
+        r = r"(\d+)"
         digits_iter = re.finditer(r, line)
         digit_locations = [(m.start(0), m.end(0)) for m in digits_iter]
         return digit_locations
