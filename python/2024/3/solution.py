@@ -55,14 +55,12 @@ class Solver:
         
         # Add in the last do segment in the input text
         cleaned_valid_substrings.append((do_locations[-1], len(self.txt)))
-        
+
         # Parse through all of the valid substrings like I did before
         sum = 0
         for ind in cleaned_valid_substrings:
             substr = self.txt[ind[0]:ind[1]]
             valid_multiply_instructions = self.find_valid_multiply_instructions(substr)
-            print(substr)
-            print()
             for instruction in valid_multiply_instructions:
                 sum += self.multiply_instructions(instruction)
 
@@ -73,6 +71,4 @@ if __name__ == "__main__":
 
     solver = Solver()
     print(f"Solution to problem 1: {solver.solution_1()}")
-
-    print(solver.find_location_of_dos_and_donts())
-    print(solver.solution_2())
+    print(f"Solution to problem 2: {solver.solution_2()}")
