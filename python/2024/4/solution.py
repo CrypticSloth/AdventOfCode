@@ -22,8 +22,7 @@ class Solver:
             inp = self.input
         for line in inp:
             for search_term in self.search_terms:
-                if search_term in line:
-                    count += 1
+                count += line.count(search_term)
         return count
 
     def transpose_list_of_strings(self, input:list[str]) -> list[str]:
@@ -81,34 +80,7 @@ if __name__ == "__main__":
         "MAMMMXMMMM",
         "MXMXAXMASX",
     ]
-    # t = [
-    #     "....XXMAS.",
-    #     ".SAMXMS...",
-    #     "...S..A...",
-    #     "..A.A.MS.X",
-    #     "XMASAMX.MM",
-    #     "X.....XA.A",
-    #     "S.S.S.S.SS",
-    #     ".A.A.A.A.A",
-    #     "..M.M.M.MM",
-    #     ".X.X.XMASX",
-    # ]
-    # t = [
-    #     "X..X",
-    #     "MMMM",
-    #     "AAAA",
-    #     "S..S"
-    # ]
 
-    # t = [
-    #     "S.......X",
-    #     ".A.....M.",
-    #     "..M...A..",
-    #     "...X.S...",
-    #     "....A....",
-    #     "...M.A...",
-    #     "..X...S.."
-    # ]
     for l in solver.string_shifter(t, shift_right=True):
         print(l)
     print()
@@ -125,12 +97,5 @@ if __name__ == "__main__":
     print(solver.find_vertical_instances(t))
     print(solver.find_vertical_instances(solver.string_shifter(t, shift_right=True)))
     print(solver.find_vertical_instances(solver.string_shifter(t, shift_right=False)))
-    # print()
-    # print(solver.find_horizontal_instances(solver.string_shifter(solver.transpose_list_of_strings(t), shift_right=True)))
-    # print(solver.find_horizontal_instances(solver.string_shifter(solver.transpose_list_of_strings(t), shift_right=False)))
 
     print(f"Solution to problem 1: {solver.solution_1()}")
-
-    with open('output_test.txt', 'w') as f:
-        for l in solver.string_shifter(solver.input, shift_right=True):
-            f.write(l + '\n')
