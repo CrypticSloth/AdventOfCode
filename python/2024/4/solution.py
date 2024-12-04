@@ -1,4 +1,4 @@
-import numpy as np
+import re
 
 # 1. TO solve this one. I will create a substring searcher to find all instances of either XMAS or SAMX vertically or horizontally. 
 # 2. To find the diagonal instances, I will go down the text and shift (both left shift and right shift the next 4 rows as the following: 
@@ -56,6 +56,12 @@ class Solver:
             shifted_strings.append(("."*pad_amt) + string + ("."*((len(inp)-1)-pad_amt)))
         return shifted_strings
     
+    def substring_finder(self, pattern:str, string:str)->list[int]:
+        locs = []
+        for match in re.finditer(pattern, string):
+            locs.append(match.start())
+        return locs
+
     def solution_1(self)->int:
         count = 0
         count += self.find_horizontal_instances(self.input)
@@ -63,39 +69,40 @@ class Solver:
         count += self.find_vertical_instances(self.string_shifter(self.input, shift_right=True))
         count += self.find_vertical_instances(self.string_shifter(self.input, shift_right=False))
         return count
+    
+    def solution_2(self)->int:
+        # For Every "A" check if the corners are "SM" or "MA" (going left to right)
+        count = 0
+        for r in range(1, len(self.input)-1):
+            for c in range(1, len(self.input[r])-1):
+                if self.input[r][c] == 'A':
+                    if (((self.input[r-1][c-1] == 'S') & (self.input[r+1][c+1] == "M")) | ((self.input[r-1][c-1] == 'M') & (self.input[r+1][c+1] == "S"))) &\
+                       (((self.input[r-1][c+1] == 'S') & (self.input[r+1][c-1] == "M")) | ((self.input[r-1][c+1] == 'M') & (self.input[r+1][c-1] == "S"))):
+                        count += 1
+                        
+        return count
+
 
 if __name__ == "__main__":
 
     solver = Solver()
 
-    t = [
-        "MMMSXXMASM",
-        "MSAMXMSMSA",
-        "AMXSXMAAMM",
-        "MSAMASMSMX",
-        "XMASAMXAMM",
-        "XXAMMXXAMA",
-        "SMSMSASXSS",
-        "SAXAMASAAA",
-        "MAMMMXMMMM",
-        "MXMXAXMASX",
-    ]
-
-    for l in solver.string_shifter(t, shift_right=True):
-        print(l)
-    print()
-    for l in solver.string_shifter(t, shift_right=False):
-        print(l)
-    print()
-    for l in solver.transpose_list_of_strings(solver.string_shifter(t, shift_right=True)):
-        print(l)
-    print()
-    for l in solver.transpose_list_of_strings(solver.string_shifter(t, shift_right=False)):
-        print(l)
-    print()
-    print(solver.find_horizontal_instances(t))
-    print(solver.find_vertical_instances(t))
-    print(solver.find_vertical_instances(solver.string_shifter(t, shift_right=True)))
-    print(solver.find_vertical_instances(solver.string_shifter(t, shift_right=False)))
+    # for l in solver.string_shifter(solver.input, shift_right=True):
+    #     print(l)
+    # print()
+    # for l in solver.string_shifter(solver.input, shift_right=False):
+    #     print(l)
+    # print()
+    # for l in solver.transpose_list_of_strings(solver.string_shifter(solver.input, shift_right=True)):
+    #     print(l)
+    # print()
+    # for l in solver.transpose_list_of_strings(solver.string_shifter(solver.input, shift_right=False)):
+    #     print(l)
+    # print()
+    # print(solver.find_horizontal_instances(solver.input))
+    # print(solver.find_vertical_instances(solver.input))
+    # print(solver.find_vertical_instances(solver.string_shifter(solver.input, shift_right=True)))
+    # print(solver.find_vertical_instances(solver.string_shifter(solver.input, shift_right=False)))
 
     print(f"Solution to problem 1: {solver.solution_1()}")
+    print(f"Solution to problem 2: {solver.solution_2()}")
