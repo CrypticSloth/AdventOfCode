@@ -5,7 +5,7 @@ class Solver:
 
     def __init__(self):
 
-        with open('input_test.txt', 'r') as f:
+        with open('input.txt', 'r') as f:
             self.lines = f.readlines()
             
         lines_reshaped = []
@@ -43,7 +43,7 @@ class Solver:
         # Idea is that for each antenna_id, find all antenna_id locations. Calculate the rowise and column wise distance 
         # between each antenna with the same id, then add that distance in the opposite direction and see if it lands in the grid
         # If it does, then iterate the counter.
-        counter = 0
+        self.antinode_locations = []
         for id in self.antenna_ids:
             locs = self.antenna_locations[id]
             for loc1 in locs:
@@ -54,15 +54,38 @@ class Solver:
                         antinode_row = loc1[0]+row_dist
                         antinode_col = loc1[1]+col_dist
                         if ((antinode_row >= 0) & (antinode_row < self.grid.shape[0])) & ((antinode_col >= 0) & (antinode_col < self.grid.shape[1])):
-                            counter += 1
                             self.antinode_locations.append((antinode_row, antinode_col))
-        return counter
+        return len(set(self.antinode_locations))
+    
+    def solution_2(self)->int:
+        # Idea is that for each antenna_id, find all antenna_id locations. Calculate the rowise and column wise distance 
+        # between each antenna with the same id, then add that distance in the opposite direction and see if it lands in the grid
+        # If it does, then iterate the counter.
+        self.antinode_locations = []
+        for id in self.antenna_ids:
+            locs = self.antenna_locations[id]
+            # if len(locs) > 1:
+            for loc1 in locs:
+                self.antinode_locations.append(loc1)
+                for loc2 in locs:
+                    if loc1 != loc2:
+                        multiplier = 1
+                        while True:
+                            row_dist = loc1[0] - loc2[0]
+                            col_dist = loc1[1] - loc2[1]
+                            antinode_row = loc1[0]+(row_dist*multiplier)
+                            antinode_col = loc1[1]+(col_dist*multiplier)
+                            if ((antinode_row >= 0) & (antinode_row < self.grid.shape[0])) & ((antinode_col >= 0) & (antinode_col < self.grid.shape[1])):
+                                self.antinode_locations.append((antinode_row, antinode_col))
+                                multiplier += 1
+                            else:
+                                break
+        return len(set(self.antinode_locations))
 
 if __name__ == "__main__":
 
     solver = Solver()
     print(solver.grid.shape)
-    # print(solver.find_location_of_antennas())
-    # print(solver.antenna_ids)
     print(solver.solution_1())
-    print(solver.antinode_plotter())
+    print(solver.solution_2())
+    # print(solver.antinode_plotter())
