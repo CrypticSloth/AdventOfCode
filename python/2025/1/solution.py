@@ -41,31 +41,31 @@ class Dial:
     def turn_dial(self, turn_direction: str, turn_amount: int) -> int:
         assert turn_direction in ['L', 'R'], "Turn direction can either be 'L' or 'R'"
 
-        started_at_zero = self.dial_value == 0
-
         if turn_direction == 'L':
             delta = (self.dial_value - turn_amount)
         else:
             delta = (self.dial_value + turn_amount)
-        
+
+        # How many *full* circles did you do?
+        self.click_counter += turn_amount // 100
+
+        # Did you cross the boundary once?
+        if (delta <= 0) | (delta >= 100):
+            # if position was zero do not count
+            if self.dial_value != 0:
+                self.click_counter += 1
+
         self.dial_value = delta % 100
-
-        if delta < 0:
-            self.click_counter += max((turn_amount // 100), 1) - int(started_at_zero) # fixes double counting when starting at 0
         
-        if delta > 100:
-            self.click_counter += max((turn_amount // 100), 1)
-
         if self.dial_value == 0:
             self.zero_counter += 1
-            self.click_counter += 1
 
         return self.dial_value
 
 
 if __name__ == '__main__':
 
-    reader = DialReader('input.txt')
+    reader = DialReader('input_test.txt')
     input_lines = reader.lines
 
     dial = Dial(initial_value=50)
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     print(dial.click_counter)
 
 
-    dial = Dial(initial_value=0)
+    dial = Dial(initial_value=1)
     dial.turn_dial('L', 1000)
     # dial.turn_dial('R', 52)
     print(dial.dial_value)
