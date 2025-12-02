@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 class InputReader:
     def __init__(self, input_path:str):
@@ -39,6 +39,29 @@ class InvalidIdFinder:
         return first_half == second_half
 
 
+    def find_all_possible_substrings(self, target_id: str) -> List[str]:
+        """NOT USED"""
+        unique_substrings = set()
+        for i in range(len(target_id)):
+            for k in range(len(target_id) - i):
+                substr = target_id[i:k+i+1]
+                if len(substr) > 1:
+                    unique_substrings.add(substr)
+        return list(unique_substrings)
+
+
+    def find_all_contiguous_substrings(self, target_id: str) -> Dict[int, List[str]]:
+        contiguous_substrings = {}
+        for n in range(1, len(target_id)):
+            substrs = [target_id[i:i+n] for i in range(0, len(target_id), n)]
+            contiguous_substrings[n] = substrs
+        return contiguous_substrings
+
+
+    def all_equal(self, lst: List[str]) -> bool:
+        return len(set(lst)) == 1
+
+
     def solution_1(self) -> int:
         invalid_ids = []
         for id_range in self.id_ranges:
@@ -46,11 +69,21 @@ class InvalidIdFinder:
             for target_id in ids_in_range:
                 if self.is_invalid_id_part1(target_id):
                     invalid_ids.append(int(target_id))
-        # print(invalid_ids)
         return sum(invalid_ids)
-        
-        
+    
 
+    def solution_2(self) -> int:
+        invalid_ids = []
+        for id_range in self.id_ranges:
+            ids_in_range = self.get_all_ids_from_range(id_range)
+            for target_id in ids_in_range:
+                # Get all possible substrings
+                all_substrings = self.find_all_contiguous_substrings(target_id)
+                for k,v in all_substrings.items():
+                    if self.all_equal(v):
+                        invalid_ids.append(int(target_id))
+                        break
+        return sum(invalid_ids)
 
 if __name__ == '__main__':
     
@@ -58,7 +91,4 @@ if __name__ == '__main__':
     id_finder = InvalidIdFinder(reader.parse_ranges())  
 
     print(id_finder.solution_1())
-
-    example_id_range = id_finder.get_all_ids_from_range(id_finder.id_ranges[0])
-    print(id_finder.is_invalid_id_part1('121'))
-
+    print(id_finder.solution_2())
