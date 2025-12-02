@@ -5,14 +5,13 @@ class InputReader:
         with open(self.input_path, 'r') as f:
             self.lines = f.readlines()
 
-        # Remove new line characters "\n"
-        self.lines = [l.strip() for l in self.lines]
-
 
 class DialReader(InputReader):
     def __init__(self, input_path:str):
         super().__init__(input_path)
-    
+        # Remove new line characters "\n"
+        self.lines = [l.strip() for l in self.lines]
+
     def get_direction(self, line:str) -> str:
         direction = line[0]
         assert direction in ['L', 'R'], "direction found was not either 'L' or 'R'"
