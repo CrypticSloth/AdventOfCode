@@ -34,27 +34,33 @@ class JoltageFinder:
 
     def find_largest_joltage_of_size_n(self, battery:str, joltage_size:int=12) -> int:
         battery_list = self.convert_battery_to_list(battery)
-
         largest_joltages = []
-
+        
+        idx = 0
         for i in range(0, joltage_size):
-            truncated_battery = battery_list[i:i+(joltage_size-i)]
+            truncated_battery = battery_list[idx:len(battery_list) - (joltage_size - len(largest_joltages) - 1)]
             largest_joltage_idx = np.argmax(truncated_battery)
             largest_joltages.append(truncated_battery[largest_joltage_idx])
-
-            print(truncated_battery)
-            print(largest_joltages)
+            idx = idx + largest_joltage_idx + 1
         
         largest_joltages_str = [str(j) for j in largest_joltages]
 
         return int(''.join(largest_joltages_str))
     
 
+    def find_largest_joltage_of_size_12(self, battery:str) -> int:
+
+        battery_list = self.convert_battery_to_list(battery)
+        largest_joltages = []
+
+
+
+
     def solution_1(self) -> int:
         sum_joltages = 0
         for battery in self.batteries:
             largest_joltage = self.find_largest_joltage_of_size_2(battery)
-            print(battery, largest_joltage)
+            # print(battery, largest_joltage)
             sum_joltages += largest_joltage
         return sum_joltages
     
@@ -62,15 +68,15 @@ class JoltageFinder:
         sum_joltages = 0
         for battery in self.batteries:
             largest_joltage = self.find_largest_joltage_of_size_n(battery, joltage_size=12)
-            print(battery, largest_joltage)
+            # print(battery, largest_joltage)
             sum_joltages += largest_joltage
         return sum_joltages
 
 
 
 if __name__ == '__main__':
-    ir = InputReader('input_test.txt')
-    print(ir.lines)
+    ir = InputReader('input.txt')
+    # print(ir.lines)
 
     jf = JoltageFinder(ir.lines)
     print(jf.solution_1())
