@@ -1,5 +1,5 @@
 from typing import List
-import tqdm
+from itertools import combinations
 
 class InputReader:
     def __init__(self, input_path:str):
@@ -40,58 +40,52 @@ class FreshIngredientChecker():
                     fresh_ingredients.add(i)
         return len(list(fresh_ingredients))
 
-    def ingredient_merger(self) -> List[tuple]:
-        merged_ingredients = [self.fresh_ranges[0]]
-        for r in self.fresh_ranges[1:]:
-            merged_flag = False
-            for i in range(len(merged_ingredients)):
-                m = merged_ingredients[i]
-                if ((r[0] >= m[0]) & (r[0] <= m[1])) & (r[1] >= m[1]):
-                    merged_ingredients.append((m[0], r[1]))
-                    merged_ingredients.pop(i)
-                    merged_flag = True
-                elif ((r[1] >= m[0]) & (r[1] <= m[1])) & (r[0] <= m[1]):
-                    merged_ingredients.append((r[0], m[1]))
-                    merged_ingredients.pop(i)
-                    merged_flag = True
 
-                print(r, m)
-                print(merged_ingredients)
-                print(merged_flag)
-                print('---')
-            if not merged_flag:
-                merged_ingredients.append(r)
-        return merged_ingredients
+    def any_items_overlap(self,l):
 
-    def ingredient_merger_v2(self) -> List[tuple]:
-        merged_ingredients = self.fresh_ranges.copy()
-        # while True:
-        for y in range(len(merged_ingredients)):
-            r = merged_ingredients[y]
-            merged_flag = False
-            for i in range(len(merged_ingredients)):
-                m = merged_ingredients[i]
-                if ((r[0] >= m[0]) & (r[0] <= m[1])) & (r[1] >= m[1]):
-                    merged_ingredients[i] = (m[0], r[1])
-                    # merged_ingredients.pop(i)
-                    merged_flag = True
-                elif ((r[1] >= m[0]) & (r[1] <= m[1])) & (r[0] <= m[1]):
-                    merged_ingredients[i] = (r[0], m[1])
-                    # merged_ingredients.pop(i)
-                    merged_flag = True
-            # print(r, m)
-            # print(merged_ingredients)
-            # print(merged_flag)
-            # print('---')
-            # break
-            # if not merged_flag:
-            #     break
-            # if not merged_flag:
-            #     merged_ingredients.append(r)
-        return list(set(merged_ingredients))
+        # For each possible pair of lists in l
+        for item1, item2 in combinations(l, 2):
+
+            min1, max1 = item1
+            min2, max2 = item2
+
+            if min1 > max2 or max1 < min2:
+                # no overlap so ignore this pair
+                continue
+
+            else:  # One of the combinations overlaps, so return them
+                return item1, item2
+
+        return None
+
+
+    def ingredient_merger(self):
+
+        l = self.fresh_ranges.copy()
+
+        while True:
+
+            if not self.any_items_overlap(l):
+                # No items overlapped - break the loop and finish
+                print(l)
+                break
+
+            else:  # There are still overlaps
+                item1, item2 = self.any_items_overlap(l)
+
+                # Remove the items from the main list
+                l.remove(item1)
+                l.remove(item2)
+
+                # Replace them with a merged version
+                item_values = item1 + item2
+                l.append((min(item_values), max(item_values)))
+                # Start the loop again to check for any other overlaps
+        return l
+    
 
     def solution_2(self) -> int:
-        merged_ingredients = self.ingredient_merger_v2()
+        merged_ingredients = self.ingredient_merger()
         num_ingredients = 0
         for i in merged_ingredients:
             num_ingredients += (i[1] - i[0]) + 1
@@ -104,8 +98,6 @@ if __name__ == '__main__':
     print(reader.available_ingredients)
 
     fic = FreshIngredientChecker(reader.fresh_ranges, reader.available_ingredients)
-
-    # print(fic.ingredient_merger_v2())
 
     print(fic.solution_1())
     print(fic.solution_2())
