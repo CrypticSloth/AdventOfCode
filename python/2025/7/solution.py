@@ -114,7 +114,7 @@ class TachyonWalkerQuantum:
         self.input_array = input_array
         self.loc = loc
 
-        
+
 class Solution2:
 
     def __init__(self, input_file:str):
@@ -149,8 +149,8 @@ class Solution2:
                     w1l = TachyonWalkerQuantum(self.reader.input_array, loc_l, direction=0)
                     w2l = TachyonWalkerQuantum(self.reader.input_array, loc_r, direction=0)
 
-                    tachyon_beams.append(w1)
-                    tachyon_beams.append(w2)
+                    tachyon_beams.append(w1r)
+                    tachyon_beams.append(w2r)
                     split_counter += 1
                 else:
                     if beam.loc[0] >= self.reader.input_array.shape[0]-1:
