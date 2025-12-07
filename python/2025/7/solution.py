@@ -78,8 +78,10 @@ class Solution1:
 
             tachyon_beams = tachyon_beams_c
 
-            for i, b in enumerate(tachyon_beams):
-                print(i, b.loc)
+
+            ## TESTING OUTPUT ##
+            # for i, b in enumerate(tachyon_beams):
+            #     print(i, b.loc)
 
             # locs = [tuple(b.loc) for b in tachyon_beams]
             # if len(list(set(locs))) != len(locs):
@@ -89,10 +91,10 @@ class Solution1:
             #     l = tachyon_beams[x]
             #     print(x, l.loc)
 
-            c = self.reader.input_array.copy()[beam.loc[0]]
-            for i, b in enumerate(tachyon_beams):
-                c[b.loc[1]] = '|'
-            arr_output[b.loc[0], :] = c
+            # c = self.reader.input_array.copy()[beam.loc[0]]
+            # for i, b in enumerate(tachyon_beams):
+            #     c[b.loc[1]] = '|'
+            # arr_output[b.loc[0], :] = c
 
             # Print entire tree
             # for i in range(arr_output.shape[0]):
